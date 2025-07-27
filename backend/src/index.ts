@@ -1,15 +1,28 @@
-import express from "express";
-import { walletValidateController } from "./controllers/wallet-validate.controller";
-import { walletInfoController } from "./controllers/wallet-info.controller";
+import { app } from './app';
+import { config } from './config';
+import { logger } from './config/logger';
 
-const app = express();
-app.use(express.json());
+const startServer = () => {
+  try {
+    app.listen(config.port, () => {
+      logger.info(`Server running on port ${config.port} in ${config.env} mode`);
+    });
+  } catch (error) {
+    logger.error('Error starting server:', error);
+    process.exit(1);
+  }
+};
 
-// API routes
-app.post("/api/wallet/validate", walletValidateController);
-app.post("/api/wallet/info", walletInfoController);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', error);
+  process.exit(1);
 });
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+  logger.error('Unhandled Rejection:', error);
+  process.exit(1);
+});
+
+startServer();
