@@ -22,12 +22,17 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs
+*.log
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+.history/
+*.sublime-workspace
+*.sublime-project
 
 # iOS
 *.ipa
@@ -52,4 +57,14 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace 
+project.xcworkspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Cache
+.cache/
+.npm/ 
