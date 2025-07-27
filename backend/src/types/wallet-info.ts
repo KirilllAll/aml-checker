@@ -1,39 +1,39 @@
+export interface Token {
+  address: string;
+  symbol: string;
+  name: string;
+  balance: string;
+  balanceUSD?: string;
+  lastTransferTimestamp?: string;
+  transferCount: number;
+}
+
+export interface Transaction {
+  hash: string;
+  timestamp: string;
+  type: 'incoming' | 'outgoing';
+  amount: string;
+  amountUSD?: string;
+  tokenSymbol?: string;
+  tokenAddress?: string;
+}
+
 export interface WalletInfo {
-  // Basic info
   address: string;
   network: string;
   balance: string;
   balanceUSD?: string;
-
-  // Transaction info
   txCount: number;
+  tokenCount?: number;
   firstTxTimestamp?: string;
   lastTxTimestamp?: string;
-
-  // Risk assessment
-  riskScore?: number; // 0-100, where 100 is highest risk
-  riskFlags?: string[];
-
-  // Additional data
-  labels?: string[]; // e.g. "exchange", "mixer", "gambling"
-  tags?: string[]; // Additional context tags
-  notes?: string[]; // Any additional information
-
-  // Token balances (for ETH/SOL)
-  tokens?: {
-    symbol: string;
-    balance: string;
-    balanceUSD?: string;
-  }[];
-
-  // Recent transactions
-  recentTransactions?: {
-    hash: string;
-    timestamp: string;
-    type: "incoming" | "outgoing";
-    amount: string;
-    amountUSD?: string;
-  }[];
+  riskScore: number;
+  riskFlags: string[];
+  labels: string[];
+  tags: string[];
+  notes: string[];
+  tokens?: Token[];
+  recentTransactions: Transaction[];
 }
 
 // API Response types for different services
@@ -62,19 +62,19 @@ export interface BlockCypherAddressResponse {
 
 // Error handling
 export enum WalletInfoError {
-  NOT_FOUND = "Account not found",
-  RATE_LIMIT = "API rate limit exceeded",
-  NETWORK_ERROR = "Network error",
-  INVALID_RESPONSE = "Invalid API response",
-  UNSUPPORTED_NETWORK = "Network not supported",
+  NOT_FOUND = 'Account not found',
+  RATE_LIMIT = 'API rate limit exceeded',
+  NETWORK_ERROR = 'Network error',
+  INVALID_RESPONSE = 'Invalid API response',
+  UNSUPPORTED_NETWORK = 'Network not supported',
 }
 
 export class WalletInfoException extends Error {
   constructor(
     public readonly code: WalletInfoError,
-    public readonly details?: string
+    public readonly details?: string,
   ) {
     super(code);
-    this.name = "WalletInfoException";
+    this.name = 'WalletInfoException';
   }
 }

@@ -3,7 +3,7 @@ import {
   BlockCypherAddressResponse,
   WalletInfoError,
   WalletInfoException,
-} from "../types/wallet-info";
+} from '../types/wallet-info';
 
 export class WalletInfoNormalizer {
   /**
@@ -17,19 +17,18 @@ export class WalletInfoNormalizer {
     const recentTransactions = data.txrefs?.slice(0, 10).map((tx) => ({
       hash: tx.tx_hash,
       timestamp: tx.confirmed,
-      type: tx.tx_input_n >= 0 ? ("outgoing" as const) : ("incoming" as const),
+      type: tx.tx_input_n >= 0 ? ('outgoing' as const) : ('incoming' as const),
       amount: (tx.value / 1e8).toString(), // Convert satoshis to BTC
       // amountUSD will be added later when we implement price fetching
     }));
 
     return {
       address: data.address,
-      network: "bitcoin",
+      network: 'bitcoin',
       balance: (data.final_balance / 1e8).toString(), // Convert satoshis to BTC
       txCount: data.final_n_tx,
       // We'll add these when we implement historical tx fetching
-      firstTxTimestamp:
-        recentTransactions?.[recentTransactions.length - 1]?.timestamp,
+      firstTxTimestamp: recentTransactions?.[recentTransactions.length - 1]?.timestamp,
       lastTxTimestamp: recentTransactions?.[0]?.timestamp,
 
       // Risk assessment - we'll expand this later
@@ -41,7 +40,8 @@ export class WalletInfoNormalizer {
       tags: [],
       notes: [],
 
-      recentTransactions,
+      // Ensure recentTransactions is never undefined by defaulting to empty array
+      recentTransactions: recentTransactions || [],
     };
   }
 
@@ -53,25 +53,19 @@ export class WalletInfoNormalizer {
     if (!info.address || !info.network || !info.balance) {
       throw new WalletInfoException(
         WalletInfoError.INVALID_RESPONSE,
-        "Missing required fields in normalized wallet info"
+        'Missing required fields in normalized wallet info',
       );
     }
 
     // Validate numeric fields
-    if (typeof info.txCount !== "number" || info.txCount < 0) {
-      throw new WalletInfoException(
-        WalletInfoError.INVALID_RESPONSE,
-        "Invalid transaction count"
-      );
+    if (typeof info.txCount !== 'number' || info.txCount < 0) {
+      throw new WalletInfoException(WalletInfoError.INVALID_RESPONSE, 'Invalid transaction count');
     }
 
-    if (
-      info.riskScore !== undefined &&
-      (info.riskScore < 0 || info.riskScore > 100)
-    ) {
+    if (info.riskScore !== undefined && (info.riskScore < 0 || info.riskScore > 100)) {
       throw new WalletInfoException(
         WalletInfoError.INVALID_RESPONSE,
-        "Risk score must be between 0 and 100"
+        'Risk score must be between 0 and 100',
       );
     }
 
@@ -80,13 +74,13 @@ export class WalletInfoNormalizer {
     if (info.firstTxTimestamp && !timestampRegex.test(info.firstTxTimestamp)) {
       throw new WalletInfoException(
         WalletInfoError.INVALID_RESPONSE,
-        "Invalid firstTxTimestamp format"
+        'Invalid firstTxTimestamp format',
       );
     }
     if (info.lastTxTimestamp && !timestampRegex.test(info.lastTxTimestamp)) {
       throw new WalletInfoException(
         WalletInfoError.INVALID_RESPONSE,
-        "Invalid lastTxTimestamp format"
+        'Invalid lastTxTimestamp format',
       );
     }
   }

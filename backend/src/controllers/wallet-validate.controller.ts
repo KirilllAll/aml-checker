@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { NetworkDetector } from "../services/network-detector.service";
+import { Request, Response } from 'express';
+import { NetworkDetector } from '../services/network-detector.service';
 
 export const walletValidateController = async (req: Request, res: Response) => {
   try {
@@ -7,7 +7,7 @@ export const walletValidateController = async (req: Request, res: Response) => {
 
     if (!address) {
       return res.status(400).json({
-        error: "Address is required",
+        error: 'Address is required',
       });
     }
 
@@ -16,10 +16,9 @@ export const walletValidateController = async (req: Request, res: Response) => {
 
     return res.json(result);
   } catch (error) {
-    console.error("Error in wallet validation:", error);
+    console.error('Error in wallet validation:', error);
     return res.status(500).json({
-      error:
-        error instanceof Error ? error.message : "Failed to validate address",
+      error: error instanceof Error ? error.message : 'Failed to validate address',
     });
   }
 };
